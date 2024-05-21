@@ -182,7 +182,24 @@ class Entity (var name: String) {
 
 
     // AUX FUNCs -------------------------------------------------------------------------------------------
-
+    fun toXmlString(): String {
+        val attributesString = attributes.joinToString(" ") { "${it.name}=\"${it.value}\"" }
+        return if (children.isEmpty() && text.isNullOrEmpty()) {
+            if (attributesString.isEmpty()) {
+                "<$name/>"
+            } else {
+                "<$name $attributesString/>"
+            }
+        } else {
+            val childrenString = children.joinToString("") { it.toXmlString() }
+            val content = (text ?: "") + childrenString
+            if (attributesString.isEmpty()) {
+                "<$name>$content</$name>"
+            } else {
+                "<$name $attributesString>$content</$name>"
+            }
+        }
+    }
     private fun parametersVerification() {
         val allowedNameRegex = "^[a-zA-Z][a-zA-Z0-9]+$".toRegex()
         if (!allowedNameRegex.matches(name)) {

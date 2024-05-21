@@ -388,5 +388,67 @@ class UnitTests {
         assertEquals(expectedOutput, formattedXml.trim())
     }
 
+    @Test
+    fun microXpathTest() {
+        val root = Entity("plano")
+        val document = Document("1.0", "UTF-8", root)
 
+        val course = Entity("curso")
+        course.text = "Mestrado em Engenharia Informática"
+        document.addEntity(course)
+
+        val fuc = Entity("fuc")
+        fuc.addAttribute(Attribute("codigo", "M4310"))
+        document.addEntity(fuc)
+
+        val nome = Entity("nome")
+        nome.text = "Programação Avançada"
+        fuc.addChildren(nome)
+
+        val ects = Entity("ects")
+        ects.text = "6.0"
+        fuc.addChildren(ects)
+
+        val avaliacao = Entity("avaliacao")
+        fuc.addChildren(avaliacao)
+
+        val componente1 = Entity("componente")
+        componente1.addAttribute(Attribute("nome", "Quizzes"))
+        componente1.addAttribute(Attribute("peso", "20%"))
+        avaliacao.addChildren(componente1)
+
+        val componente2 = Entity("componente")
+        componente2.addAttribute(Attribute("nome", "Projeto"))
+        componente2.addAttribute(Attribute("peso", "80%"))
+        avaliacao.addChildren(componente2)
+
+        val componente3 = Entity("componente")
+        componente3.addAttribute(Attribute("nome", "Dissertação"))
+        componente3.addAttribute(Attribute("peso", "60%"))
+        avaliacao.addChildren(componente3)
+
+        val componente4 = Entity("componente")
+        componente4.addAttribute(Attribute("nome", "Apresentação"))
+        componente4.addAttribute(Attribute("peso", "20%"))
+        avaliacao.addChildren(componente4)
+
+        val componente5 = Entity("componente")
+        componente5.addAttribute(Attribute("nome", "Discussão"))
+        componente5.addAttribute(Attribute("peso", "20%"))
+        avaliacao.addChildren(componente5)
+
+
+        val queryResult1 = document.queryMicroXPath("fuc/avaliacao/componente")
+        println("Consulta 1: Componentes de Avaliação")
+        queryResult1.forEach { println(it)}
+
+        val queryResult2 = document.queryMicroXPath("curso")
+        println("\nConsulta 2: Cursos")
+        queryResult2.forEach { println(it)}
+
+        val queryResult3 = document.queryMicroXPath("fuc/nome")
+        println("\nConsulta 3: Nome de Cadeiras")
+        queryResult3.forEach { println(it)}
+
+    }
 }

@@ -93,9 +93,28 @@ class Document (val version: String = "1.0", val encoding: String = "UTF-8", val
             println("Failed to save document: ${e.message}")
         }
     }
-
+    fun queryMicroXPath(expression: String): List<String> {
+        val parts = expression.split("/")
+        val entities = queryEntitiesRecursively(entityRoot, parts, 0)
+        return entities.map { it.toXmlString() }
+    }
 
     // AUX FUNCs -------------------------------------------------------------------------------------------
+    private fun queryEntitiesRecursively(entity: Entity, parts: List<String>, index: Int): List<Entity> {
+        if (index >= parts.size) return emptyList()
+        val currentPart = parts[index]
+        val matchedEntities = entity.children.filter { it.name == currentPart }
+
+        if (index == parts.size - 1) {
+            return matchedEntities
+        }
+
+        val result = mutableListOf<Entity>()
+        matchedEntities.forEach { matchedEntity ->
+            result.addAll(queryEntitiesRecursively(matchedEntity, parts, index + 1))
+        }
+        return result
+    }
 
     private fun parametersVerification() {
         val allowedVersionNameRegex = "^\\d\\.\\d?$".toRegex()
