@@ -5,6 +5,11 @@ class Document (val version: String = "1.0", val encoding: String = "UTF-8", val
         parametersVerification()
     }
 
+    fun accept(visitor: Visitor) {
+        visitor.visitDocument(this)
+        //entityRoot.accept(visitor)
+    }
+
     // MAIN FUNCs ------------------------------------------------------------------------------------------
 
     fun addEntity(entity: Entity) {

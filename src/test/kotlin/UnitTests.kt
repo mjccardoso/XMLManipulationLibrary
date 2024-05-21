@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
+
 //import kotlin.test.assertTrue
 
 
@@ -287,41 +289,6 @@ class UnitTests {
 
     }
 
-//    @Test
-//    fun `update global attribute name`() {
-//        val root = Entity("root")
-//        val child1 = Entity("child1")
-//        val child2 = Entity("child2")
-//        root.children.add(child1)
-//        child1.children.add(child2)
-//
-//        child1.attributes.add(Attribute("oldName", "value1"))
-//        child2.attributes.add(Attribute("oldName", "value2"))
-//
-//        val document = Document("1.0", "UTF-8", root)
-//        document.updateGlobalAttributeName("oldName", "newName")
-//
-//        assertNull(child1.attributes.find { it.name == "oldName" })
-//        assertEquals("value1", child1.attributes.find { it.name == "newName" }?.value)
-//        assertNull(child2.attributes.find { it.name == "oldName" })
-//        assertEquals("value2", child2.attributes.find { it.name == "newName" }?.value)
-//    }
-//
-//    @Test
-//    fun `update global attribute value`() {
-//        val root = Entity("root")
-//        val child1 = Entity("child1")
-//        root.children.add(child1)
-//
-//        child1.attributes.add(Attribute("name", "oldValue"))
-//        root.attributes.add(Attribute("name", "rootOldValue"))
-//
-//        val document = Document("1.0", "UTF-8", root)
-//        document.updateGlobalAttributeValue("name", "newValue")
-//
-//        assertEquals("newValue", root.attributes.find { it.name == "name" }?.value)
-//        assertEquals("newValue", child1.attributes.find { it.name == "name" }?.value)
-//    }
 
     @Test
     fun testSaveFile(){
@@ -358,147 +325,68 @@ class UnitTests {
         avaliacao.addChildren(componente2)
 
         val documentContent = document.prettyPrintDocument(document)
-        document.saveDocumentToFile(documentContent, "/Users/mauurao/Desktop/ISCTE/MEI/2º Semestre/Programação Avançada/Projeto/XMLManipulationLibrary/src/main/resources.xml")
+        document.saveDocumentToFile(documentContent, "src/main/resources/save_file_test.xml")
 
     }
+
+    @Test
+    fun testPrettyPrintVisitor() {
+        val root = Entity("plano")
+        val document = Document("1.0", "UTF-8", root)
+
+        val course = Entity("curso")
+        course.text = "Mestrado em Engenharia Informática"
+        document.addEntity(course)
+
+        val fuc = Entity("fuc")
+        fuc.addAttribute(Attribute("codigo", "M4310"))
+        document.addEntity(fuc)
+
+        val nome = Entity("nome")
+        nome.text = "Programação Avançada"
+        fuc.addChildren(nome)
+
+        val ects = Entity("ects")
+        ects.text = "6.0"
+        fuc.addChildren(ects)
+
+        val avaliacao = Entity("avaliacao")
+        fuc.addChildren(avaliacao)
+
+        val componente1 = Entity("componente")
+        componente1.addAttribute(Attribute("nome", "Quizzes"))
+        componente1.addAttribute(Attribute("peso", "20%"))
+        avaliacao.addChildren(componente1)
+
+        val componente2 = Entity("componente")
+        componente2.addAttribute(Attribute("nome", "Projeto"))
+        componente2.addAttribute(Attribute("peso", "80%"))
+        avaliacao.addChildren(componente2)
+
+        val visitor = PrettyPrintVisitor()
+        document.accept(visitor)
+
+        val formattedXml = visitor.getPrettyPrintedDocument()
+        println(formattedXml)
+        document.saveDocumentToFile(formattedXml, "src/main/resources/visitor_file_test.xml")
+
+        val expectedOutput = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <plano>
+              <curso>Mestrado em Engenharia Informática</curso>
+              <fuc codigo="M4310">
+                <nome>Programação Avançada</nome>
+                <ects>6.0</ects>
+                <avaliacao>
+                  <componente nome="Quizzes" peso="20%"/>
+                  <componente nome="Projeto" peso="80%"/>
+                </avaliacao>
+              </fuc>
+            </plano>
+            """.trimIndent()
+
+        assertEquals(expectedOutput, formattedXml.trim())
+    }
+
 
 }
-
-// Functionality Testing
-
-/*
-
-    private val rootEntity = Entity("root")
-    private val document = Document("1.0", "UTF-8", rootEntity)
-    private val child1 = Entity("child1")
-    private val child2 = Entity("child2")
-    private val child1Sub1 = Entity("child1Sub1")
-    private val child2Sub1 = Entity("child2Sub1")
-
-    @Test
-    fun test_adding_entity_in_document() {
-
-        document.addEntity(child1)
-        document.addEntity(child2)
-        child1.addChildren(child1Sub1)
-        child2.addChildren(child2Sub1)
-
-        document.printDocumentStructure()
-
-        // Checks that the entity has been correctly added as a child of the root entity
-        assertEquals(2, rootEntity.numberOfDirectChildren())
-    }
-
-   /*
-    @Test
-    fun testRemovingEntities() {
-
-        document.addEntity(child1)
-        document.addEntity(child2)
-        child1.addChildren(child1Sub1)
-        child2.addChildren(child2Sub1)
-
-        // Before removal
-        assertEquals(2, rootEntity.numberOfDirectChildren())
-        assertEquals(1, child1.numberOfDirectChildren())
-        assertEquals(1, child2.numberOfDirectChildren())
-
-        document.printDocumentStructure()
-
-        // Perform removal
-        document.removeEntitiesGlobally("child1")
-
-        document.printDocumentStructure()
-
-        // After removal
-        assertEquals(1, rootEntity.numberOfDirectChildren()) // child2 should remain
-        assertTrue(!rootEntity.hasChildWithName("child1")) // No "child1" should exist at the root level
-        assertEquals(1, child2.numberOfDirectChildren())
-    }
-
-    @Test
-    fun testRenameEntityGlobally() {
-
-        document.addEntity(child1)
-        document.addEntity(child2)
-        child1.addChildren(child1Sub1)
-        child2.addChildren(child2Sub1)
-
-        document.printDocumentStructure()
-
-        document.renameEntity("child1", "grown1")
-
-        document.printDocumentStructure()
-
-        assertTrue(rootEntity.hasChildWithName("grown1"))
-        assertFalse(rootEntity.hasChildWithName("child1"))
-        assertTrue(child1.hasChildWithName("child1Sub1")) // Verify if child1Sub1 it's not affected
-
-        document.renameEntity("child2", "grown2")
-
-        assertTrue(child2.getName() == "grown2")
-        assertFalse(rootEntity.hasChildWithName("child2"))
-
-        document.printDocumentStructure()
-    }
-
-    @Test
-    fun test_add_attribute() { // Talvez mudar o nome do teste e da funcao - Falar com Fernando
-
-        document.addEntity(child1)
-        document.addEntity(child2)
-        child1.addChildren(child1Sub1)
-        child2.addChildren(child2Sub1)
-        //rootEntity.printStructureWithAttributes()
-        document.addAttributeGlobally("child1", "attr1", "value1")
-        child1.printStructureWithAttributes()
-
-        //rootEntity.addAttribute(Attribute("attr1", "value1"))
-        //rootEntity.addAttribute(Attribute("attr2", "value2"))
-
-        //rootEntity.printStructureWithAttributes()
-
-        //assertEquals(2, rootEntity.numberOfAttribute())
-    }
-
-    @Test
-    fun test_add_attribute_recursively() { // Talvez mudar o nome do teste e da funcao - Falar com Fernando
-
-        document.addEntity(child1)
-        document.addEntity(child2)
-        child1.addChildren(child1Sub1)
-        child2.addChildren(child2Sub1)
-
-        document.printDocumentStructure()
-
-
-        child1.addAttributeRecursively("child1", "attr1", "value1")
-
-        child1.printStructureWithAttributes()
-
-        assertTrue(child1.hasAttribute("attr1"))
-        assertFalse(child2.hasAttribute("attr1"))
-    }
-
-    @Test
-    fun testRemoveAttributesGlobally() {
-
-        document.addEntity(child1)
-        document.addEntity(child2)
-        child1.addChildren(child1Sub1)
-        child2.addChildren(child2Sub1)
-
-        child1.attributes.add(Attribute("class", "new"))
-        child2.attributes.add(Attribute("class", "new"))
-
-        child1.printStructureWithAttributes()
-
-        document.removeAttributesGlobally("child1", "class")
-
-        child1.printStructureWithAttributes()
-
-        assertFalse(child1.hasAttribute("class"), "child1 should not have 'class' attribute anymore.")
-        //assertTrue(child2.hasAttribute("class"), "child2 should have 'class' attribute.")
-
-    }
-*/

@@ -7,6 +7,10 @@ class Entity (var name: String) {
     val children = mutableListOf<Entity>()
     private var parent: Entity? = null
 
+    fun accept(visitor: Visitor) {
+        visitor.visitEntity(this)
+    }
+
     // MAIN FUNCs ------------------------------------------------------------------------------------------
 
     fun addChildren(newChild: Entity) {
@@ -126,7 +130,6 @@ class Entity (var name: String) {
         return false
     }
 
-
     fun updateAttributeName(oldName: String, newName: String) {
         if (newName.isEmpty() || newName.toString() != "") {
             throw IllegalArgumentException("New attribute name cannot be empty.")
@@ -146,7 +149,6 @@ class Entity (var name: String) {
 
         attribute.value = newValue
     }
-
 
 
     fun printEntity(entity: Entity, stringBuilder: StringBuilder, depth: Int) {

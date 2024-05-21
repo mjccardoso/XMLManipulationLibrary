@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plano>
+  <curso>Mestrado em Engenharia Informática</curso>
+  <fuc codigo="M4310">
+    <nome>Programação Avançada</nome>
+    <ects>6.0</ects>
+    <avaliacao>
+      <componente nome="Quizzes" peso="20%"/>
+      <componente nome="Projeto" peso="80%"/>
+    </avaliacao>
+  </fuc>
+</plano>
