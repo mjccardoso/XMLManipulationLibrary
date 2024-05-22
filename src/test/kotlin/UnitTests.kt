@@ -440,7 +440,7 @@ class UnitTests {
 
         val queryResult1 = document.queryMicroXPath("fuc/avaliacao/componente")
         println("Consulta 1: Componentes de Avaliação")
-        queryResult1.forEach { println(it)}
+        val textQueryResult1 =  queryResult1.forEach {println(it)}
 
         val queryResult2 = document.queryMicroXPath("curso")
         println("\nConsulta 2: Cursos")
@@ -449,6 +449,16 @@ class UnitTests {
         val queryResult3 = document.queryMicroXPath("fuc/nome")
         println("\nConsulta 3: Nome de Cadeiras")
         queryResult3.forEach { println(it)}
+
+//        val q1ExpectedOutput = """
+//            <componente nome="Quizzes" peso="20%"/>
+//            <componente nome="Projeto" peso="80%"/>
+//            <componente nome="Dissertação" peso="60%"/>
+//            <componente nome="Apresentação" peso="20%"/>
+//            <componente nome="Discussão" peso="20%"/>
+//            """.trimIndent()
+//
+//        assertEquals(q1ExpectedOutput, textQueryResult1)
 
     }
 }
