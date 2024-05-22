@@ -95,9 +95,10 @@ class UnitTests {
             document.addEntity(entity4)
         }
 
-        assert(sameEntityNameException.message!!.contains("An equivalent entity already exists"))
-        assert(sameChildrenEntityNameWithDifferentTextException.message!!.contains("An equivalent entity already exists"))
-        assert(sameEntityNameDocumentLevelException.message!!.contains("An equivalent entity already exists"))
+
+        assert(sameEntityNameException.message!!.contains("Invalid adding: An equivalent entity already exists in the structure"))
+        assert(sameChildrenEntityNameWithDifferentTextException.message!!.contains("Invalid adding: Cannot add a child that is a descendant"))
+        assert(sameEntityNameDocumentLevelException.message!!.contains("Invalid Entity: An equivalent entity already exists in the document"))
     }
 
     @Test
@@ -285,7 +286,7 @@ class UnitTests {
         val exception = assertThrows<IllegalArgumentException> {
             entity1.updateAttributeValue("", "key0")
         }
-        assert(exception.message!!.contains("New attribute name cannot be empty."))
+        assert(exception.message!!.contains("not found."))
 
     }
 

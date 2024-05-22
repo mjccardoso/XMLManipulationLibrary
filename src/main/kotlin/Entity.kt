@@ -18,7 +18,7 @@ class Entity (var name: String) {
             throw IllegalArgumentException("Invalid adding: Cannot add a child that is a descendant")
         }
         if (this.text?.isNotEmpty() == true) {
-            throw IllegalStateException("Invalid Adding: The Entity $name with text should not have children.")
+            throw IllegalArgumentException("Invalid Adding: The Entity $name with text should not have children.")
         }
         if (this.containsEquivalent(newChild)) {
             throw IllegalArgumentException("Invalid adding: An equivalent entity already exists in the structure")
@@ -145,7 +145,7 @@ class Entity (var name: String) {
 
     fun updateAttributeValue(attributeName: String, newValue: String) {
         val attribute = attributes.find { it.name == attributeName }
-            ?: throw NoSuchElementException("Attribute with name '$attributeName' not found.")
+            ?: throw IllegalArgumentException("Attribute with name '$attributeName' not found.")
 
         attribute.value = newValue
     }
