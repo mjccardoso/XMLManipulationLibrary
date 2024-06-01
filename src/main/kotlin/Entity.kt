@@ -1,18 +1,38 @@
-class Entity (var name: String) {
+/**
+ * Represents an XML entity (tag).
+ *
+ * @property name The name of the entity.
+ * @property text The text content of the entity.
+ * @property attributes The attributes of the entity.
+ * @property children The child entities of the entity.
+ * @property parent The parent entity of the entity.
+ */
+class Entity(var name: String) {
+
     init {
         parametersVerification()
     }
+
     var text: String? = ""
     val attributes = mutableListOf<Attribute>()
     val children = mutableListOf<Entity>()
     private var parent: Entity? = null
 
+    /**
+     * Accepts a visitor to perform operations on the entity.
+     *
+     * @param visitor The visitor to accept.
+     */
     fun accept(visitor: Visitor) {
         visitor.visitEntity(this)
     }
 
-    // MAIN FUNCs ------------------------------------------------------------------------------------------
-
+    /**
+     * Adds a child entity.
+     *
+     * @param newChild The child entity to add.
+     * @throws IllegalArgumentException If the child is a descendant of the current entity or an equivalent entity already exists.
+     */
     fun addChildren(newChild: Entity) {
         if (newChild == this || newChild.isDescendantOf(this)) {
             throw IllegalArgumentException("Invalid adding: Cannot add a child that is a descendant")
@@ -27,10 +47,22 @@ class Entity (var name: String) {
         newChild.parent = this
     }
 
+    /**
+     * Sets the parent entity.
+     *
+     * @param defineParent The parent entity to set.
+     */
     fun setParent(defineParent: Entity?) {
         this.parent = defineParent
     }
 
+    /**
+     * Removes child entities by name.
+     *
+     * @param removeEntityName The name of the entity to remove.
+     * @throws IllegalArgumentException If the entity name is empty.
+     * @throws NoSuchElementException If no entity is found with the specified name.
+     */
     fun removeChildren(removeEntityName: String) {
         if (removeEntityName.isEmpty()) {
             throw IllegalArgumentException("Entity name cannot be empty.")
@@ -41,6 +73,14 @@ class Entity (var name: String) {
         }
     }
 
+    /**
+     * Renames child entities.
+     *
+     * @param oldEntityName The old name of the entity.
+     * @param newEntityName The new name of the entity.
+     * @throws IllegalArgumentException If the entity names are empty or the names are the same.
+     * @throws NoSuchElementException If no children with the old name are found.
+     */
     fun renameChildren(oldEntityName: String, newEntityName: String) {
         if (oldEntityName.isEmpty() || newEntityName.isEmpty()) {
             throw IllegalArgumentException("Entity names cannot be empty.")
@@ -60,6 +100,12 @@ class Entity (var name: String) {
         this.children.forEach { it.renameChildren(oldEntityName, newEntityName) }
     }
 
+    /**
+     * Adds an attribute to the entity.
+     *
+     * @param newAttribute The attribute to add.
+     * @throws IllegalArgumentException If the attribute already exists.
+     */
     fun addAttribute(newAttribute: Attribute) {
         val existingAttribute = attributes.find { it.name == newAttribute.name }
         if (existingAttribute != null) {
@@ -69,12 +115,23 @@ class Entity (var name: String) {
         }
     }
 
+    /**
+     * Adds an attribute recursively to all child entities.
+     *
+     * @param attribute The attribute to add.
+     */
     fun addAttributeRecursively(attribute: Attribute) {
         addAttributeIfNotExist(attribute)
         children.forEach { it.addAttributeRecursively(attribute) }
     }
 
-
+    /**
+     * Removes an attribute recursively from all child entities.
+     *
+     * @param attributeName The name of the attribute to remove.
+     * @throws IllegalArgumentException If the attribute name is empty.
+     * @throws NoSuchElementException If no attribute is found with the specified name.
+     */
     fun removeAttributeRecursively(attributeName: String) {
         if (attributeName.isEmpty()) {
             throw IllegalArgumentException("Attribute name cannot be empty.")
@@ -88,7 +145,6 @@ class Entity (var name: String) {
         }
     }
 
-    // Helper flag to indicate if an attribute was recently removed in the current recursive call
     private var attributeRemovedRecently = false
 
     private fun removeAttribute(attributeName: String): Boolean {
@@ -98,6 +154,14 @@ class Entity (var name: String) {
         return attributeRemovedRecently
     }
 
+    /**
+     * Renames an attribute recursively in all child entities.
+     *
+     * @param oldName The old name of the attribute.
+     * @param newName The new name of the attribute.
+     * @throws IllegalArgumentException If the attribute names are empty or the names are the same.
+     * @throws NoSuchElementException If no attribute is found with the old name to rename.
+     */
     fun renameAttributeRecursively(oldName: String, newName: String) {
         if (oldName.isEmpty() || newName.isEmpty()) {
             throw IllegalArgumentException("Attribute names cannot be empty.")
@@ -130,6 +194,14 @@ class Entity (var name: String) {
         return false
     }
 
+    /**
+     * Updates the name of an attribute.
+     *
+     * @param oldName The old name of the attribute.
+     * @param newName The new name of the attribute.
+     * @throws IllegalArgumentException If the new name is empty or already exists.
+     * @throws NoSuchElementException If the attribute with the old name is not found.
+     */
     fun updateAttributeName(oldName: String, newName: String) {
         if (newName.isEmpty() || newName.toString() != "") {
             throw IllegalArgumentException("New attribute name cannot be empty.")
@@ -143,6 +215,13 @@ class Entity (var name: String) {
         attribute.name = newName
     }
 
+    /**
+     * Updates the value of an attribute.
+     *
+     * @param attributeName The name of the attribute.
+     * @param newValue The new value of the attribute.
+     * @throws IllegalArgumentException If the attribute with the specified name is not found.
+     */
     fun updateAttributeValue(attributeName: String, newValue: String) {
         val attribute = attributes.find { it.name == attributeName }
             ?: throw IllegalArgumentException("Attribute with name '$attributeName' not found.")
@@ -150,38 +229,11 @@ class Entity (var name: String) {
         attribute.value = newValue
     }
 
-
-    fun printEntity(entity: Entity, stringBuilder: StringBuilder, depth: Int) {
-        val indent = "  ".repeat(depth)
-        stringBuilder.append("$indent<${entity.name}")
-
-        entity.attributes.forEach { attr ->
-            stringBuilder.append(" ${attr.name}=\"${attr.value}\"")
-        }
-
-        if (entity.children.isEmpty() && entity.text.isNullOrEmpty()) {
-            stringBuilder.append("/>\n")
-        } else {
-            stringBuilder.append(">")
-
-            if (!entity.text.isNullOrEmpty()) {
-                stringBuilder.append("${entity.text}")
-            }
-
-            if (entity.children.isNotEmpty()) {
-                stringBuilder.append("\n")
-                entity.children.forEach { child ->
-                    printEntity(child, stringBuilder, depth + 1)
-                }
-                stringBuilder.append(indent)
-            }
-
-            stringBuilder.append("</${entity.name}>\n")
-        }
-    }
-
-
-    // AUX FUNCs -------------------------------------------------------------------------------------------
+    /**
+     * Generates an XML string representation of the entity.
+     *
+     * @return The XML string representation of the entity.
+     */
     fun toXmlString(): String {
         val attributesString = attributes.joinToString(" ") { "${it.name}=\"${it.value}\"" }
         return if (children.isEmpty() && text.isNullOrEmpty()) {
@@ -200,6 +252,24 @@ class Entity (var name: String) {
             }
         }
     }
+
+    /**
+     * Prints the structure of the entity with attributes.
+     *
+     * @param prefix The prefix to use for indentation.
+     */
+    fun printStructureWithAttributes(prefix: String = "") {
+        println("$prefix$name ${text.orEmpty()}")
+        attributes.forEach { attribute ->
+            println("$prefix ${attribute.name}: ${attribute.value}")
+        }
+        children.forEach { child ->
+            child.printStructureWithAttributes("$prefix  ")
+        }
+    }
+
+    // AUX FUNCs -------------------------------------------------------------------------------------------
+
     private fun parametersVerification() {
         val allowedNameRegex = "^[a-zA-Z][a-zA-Z0-9]+$".toRegex()
         if (!allowedNameRegex.matches(name)) {
@@ -218,7 +288,7 @@ class Entity (var name: String) {
         return false
     }
 
-    private fun isEquivalent(other: Entity): Boolean {
+    fun isEquivalent(other: Entity): Boolean {
         if (this.name != other.name) return false
         if (this.name == other.name && this.text != other.text) return false
 
@@ -237,6 +307,7 @@ class Entity (var name: String) {
         }
         return children.any { it.containsEquivalent(entity) }
     }
+
     fun contains(entity: Entity): Boolean {
         if (this == entity) {
             return true
@@ -255,7 +326,6 @@ class Entity (var name: String) {
         return true
     }
 
-
     private fun addAttributeIfNotExist(attribute: Attribute) {
         if (attributes.none { it.name == attribute.name }) {
             attributes.add(attribute)
@@ -265,15 +335,36 @@ class Entity (var name: String) {
         }
     }
 
-    fun printStructureWithAttributes(prefix: String = "") {
+    /**
+     * Prints the entity and its children as an XML string.
+     *
+     * @param entity The entity to print.
+     * @param stringBuilder The StringBuilder to append the XML string to.
+     * @param depth The current depth of the entity in the hierarchy.
+     */
+    fun printEntity(entity: Entity, stringBuilder: StringBuilder, depth: Int) {
+        val indent = "  ".repeat(depth)
+        stringBuilder.append("$indent<${entity.name}")
 
-        println("$prefix$name ${text.orEmpty()}")
-
-        attributes.forEach { attribute ->
-            println("$prefix ${attribute.name}: ${attribute.value}")
+        entity.attributes.forEach { attr ->
+            stringBuilder.append(" ${attr.name}=\"${attr.value}\"")
         }
-        children.forEach { child ->
-            child.printStructureWithAttributes("$prefix  ")
+
+        if (entity.children.isEmpty() && entity.text.isNullOrEmpty()) {
+            stringBuilder.append("/>\n")
+        } else {
+            stringBuilder.append(">")
+            if (!entity.text.isNullOrEmpty()) {
+                stringBuilder.append("${entity.text}")
+            }
+            if (entity.children.isNotEmpty()) {
+                stringBuilder.append("\n")
+                entity.children.forEach { child ->
+                    printEntity(child, stringBuilder, depth + 1)
+                }
+                stringBuilder.append(indent)
+            }
+            stringBuilder.append("</${entity.name}>\n")
         }
     }
 }

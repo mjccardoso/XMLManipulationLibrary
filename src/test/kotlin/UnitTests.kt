@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.w3c.dom.Text
 import kotlin.test.assertEquals
 
 //import kotlin.test.assertTrue
@@ -65,7 +66,7 @@ class UnitTests {
         childEntity.text = "Mestrado em Engenharia Informática"
         val subChildEntity = Entity("Ramo")
 
-        val exception = assertThrows<IllegalStateException> {
+        val exception = assertThrows<IllegalArgumentException> {
             childEntity.addChildren(subChildEntity)
         }
         assert(exception.message!!.contains("should not have children"))
@@ -441,25 +442,64 @@ class UnitTests {
 
         val queryResult1 = document.queryMicroXPath("fuc/avaliacao/componente")
         println("Consulta 1: Componentes de Avaliação")
-        val textQueryResult1 =  queryResult1.forEach {println(it)}
+        //queryResult1.forEach {println(it)}.toString()
+        val textQueryResult1 = queryResult1.joinToString("\n")
+        println(textQueryResult1)
 
         val queryResult2 = document.queryMicroXPath("curso")
         println("\nConsulta 2: Cursos")
-        queryResult2.forEach { println(it)}
+        //queryResult2.forEach { println(it)}
+        val textQueryResult2 = queryResult2.joinToString("\n")
+        println(textQueryResult2)
 
         val queryResult3 = document.queryMicroXPath("fuc/nome")
         println("\nConsulta 3: Nome de Cadeiras")
-        queryResult3.forEach { println(it)}
+        //queryResult3.forEach { println(it)}
+        val textQueryResult3 = queryResult3.joinToString("\n")
+        println(textQueryResult3)
 
-//        val q1ExpectedOutput = """
-//            <componente nome="Quizzes" peso="20%"/>
-//            <componente nome="Projeto" peso="80%"/>
-//            <componente nome="Dissertação" peso="60%"/>
-//            <componente nome="Apresentação" peso="20%"/>
-//            <componente nome="Discussão" peso="20%"/>
-//            """.trimIndent()
-//
-//        assertEquals(q1ExpectedOutput, textQueryResult1)
+        val q1ExpectedOutput = """
+            <componente nome="Quizzes" peso="20%"/>
+            <componente nome="Projeto" peso="80%"/>
+            <componente nome="Dissertação" peso="60%"/>
+            <componente nome="Apresentação" peso="20%"/>
+            <componente nome="Discussão" peso="20%"/>
+            """.trimIndent()
+
+        val q2ExpectedOutput = """
+            <curso>Mestrado em Engenharia Informática</curso>
+            """.trimIndent()
+
+        val q3ExpectedOutput = """
+            <nome>Programação Avançada</nome>
+            """.trimIndent()
+
+        assertEquals(q1ExpectedOutput, textQueryResult1)
+        assertEquals(q2ExpectedOutput, textQueryResult2)
+        assertEquals(q3ExpectedOutput, textQueryResult3)
+    }
+
+    @Test
+    fun ClassMapTest() {
+
+        // Teste 1: Instância de ComponenteAvaliacao
+        val c = ComponenteAvaliacao("Quizzes", 20)
+        val cEntity = toXmlEntity(c)
+        println("Teste 1: ComponenteAvaliacao")
+        println(cEntity.toXmlString())
+
+        // Teste 2: Instância de FUC
+        val f = FUC(
+            "M4310", "Programação Avançada", 6.0, "la la...",
+            listOf(
+                ComponenteAvaliacao("Quizzes", 20),
+                ComponenteAvaliacao("Projeto", 80)
+            )
+        )
+
+        val fEntity = toXmlEntity(f)
+        println("\nTeste 2: FUC")
+        println(fEntity.toXmlString())
 
     }
 }

@@ -1,3 +1,6 @@
+/**
+ * A visitor implementation for pretty-printing XML documents.
+ */
 class PrettyPrintVisitor : Visitor {
     private val stringBuilder = StringBuilder()
     private var depth = 0
@@ -35,6 +38,11 @@ class PrettyPrintVisitor : Visitor {
         stringBuilder.append(" ${attribute.name}=\"${attribute.value}\"")
     }
 
+    /**
+     * Gets the pretty-printed XML document as a string.
+     *
+     * @return The pretty-printed XML string.
+     */
     fun getPrettyPrintedDocument(): String {
         return stringBuilder.toString()
     }
