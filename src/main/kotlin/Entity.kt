@@ -1,22 +1,24 @@
 /**
- * Represents an XML entity (tag).
- *
- * @property name The name of the entity.
- * @property text The text content of the entity.
- * @property attributes The attributes of the entity.
- * @property children The child entities of the entity.
- * @property parent The parent entity of the entity.
+ * This is an Entity Class, represent a tag in the xml document.
+ * instance should inform the name
+ * after that in the class are couple of methods useful to manipulate the class according to the logic requested
+ * @property name is a string representing the name of entity.
+ * @property text is a string optionally informing the text as content of the tag.
+ * @property attributes inform the attributes, is mutableList of an Attribute type.
+ * @property children children is a member of tag - represent the list of entity or tags.
+ * @property parent the last one is parent this important to inform if the entity belongs a specific tag
+ * @constructor Creates an entity with name.
  */
 class Entity(var name: String) {
+
+    var text: String? = ""
+    var attributes = mutableListOf<Attribute>()
+    var children = mutableListOf<Entity>()
+    var parent: Entity? = null
 
     init {
         parametersVerification()
     }
-
-    var text: String? = ""
-    val attributes = mutableListOf<Attribute>()
-    val children = mutableListOf<Entity>()
-    private var parent: Entity? = null
 
     /**
      * Accepts a visitor to perform operations on the entity.
@@ -52,10 +54,13 @@ class Entity(var name: String) {
      *
      * @param defineParent The parent entity to set.
      */
-    fun setParent(defineParent: Entity?) {
-        this.parent = defineParent
-    }
+//    fun setParent(defineParent: Entity?) {
+//        this.parent = defineParent
+//    }
 
+    fun numberOfAttribute(): Int {
+        return attributes.size
+    }
     /**
      * Removes child entities by name.
      *
@@ -145,9 +150,9 @@ class Entity(var name: String) {
         }
     }
 
-    private var attributeRemovedRecently = false
+    var attributeRemovedRecently = false
 
-    private fun removeAttribute(attributeName: String): Boolean {
+    fun removeAttribute(attributeName: String): Boolean {
         val initialSize = attributes.size
         attributes.removeIf { it.name == attributeName }
         attributeRemovedRecently = attributes.size != initialSize
@@ -251,6 +256,28 @@ class Entity(var name: String) {
                 "<$name $attributesString>$content</$name>"
             }
         }
+    }
+
+    /**
+     * Checks if the entity has an attribute with the specified name.
+     *
+     * @param attributeName The name of the attribute.
+     * @return True if the entity has the attribute, false otherwise.
+     */
+    fun hasAttribute(attributeName: String): Boolean {
+        return hasAttributeRecursively(this, attributeName)
+    }
+
+    private fun hasAttributeRecursively(entity: Entity, attributeName: String): Boolean {
+        if (entity.attributes.any { it.name == attributeName }) {
+            return true
+        }
+        for (child in entity.children) {
+            if (hasAttributeRecursively(child, attributeName)) {
+                return true
+            }
+        }
+        return false
     }
 
     /**

@@ -33,7 +33,7 @@ class Document(val version: String = "1.0", val encoding: String = "UTF-8", val 
             throw IllegalArgumentException("Invalid Entity: An equivalent entity already exists in the document")
         }
         entityRoot.addChildren(entity)
-        entity.setParent(entityRoot)
+        entity.parent = entityRoot
     }
 
     /**
@@ -146,6 +146,17 @@ class Document(val version: String = "1.0", val encoding: String = "UTF-8", val 
         return stringBuilder.toString()
     }
 
+    /**
+     * Converts the document to a pretty-printed XML string.
+     *
+     * @return The XML string representation of the document.
+     */
+    fun prettyPrint(): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("<?xml version=\"$version\" encoding=\"$encoding\"?>\n")
+        entityRoot.printEntity(entityRoot, stringBuilder, 0)
+        return stringBuilder.toString()
+    }
     /**
      * Saves the XML document content to a file.
      *
