@@ -93,6 +93,14 @@ classDiagram
     }
 ```
 
+<details>
+<summary>Class Diagram - Using Image from Drawio</summary>
+
+
+
+</details>
+
+
 ## Installation
 
 To use this library, include the following installation in your Kotlin project using maven:
@@ -257,7 +265,7 @@ Develop classes to represent XML in memory (model), operations handling, and tes
 - [x] add, remove, and change attributes on entities
 - [x] access the parent entity and child entities of an entity
 - [x] pretty print in String format, and written to file
-- [ ] scanning the document with visitor objects (Visitor)
+- [x] scanning the document with visitor objects (Visitor)
 - [x] add attributes globally to the document(providing entity name, attribute name and value)
 - [x] Renaming entities globally to the document (providing old name and new name)
 - [x] Renaming attributes globally to the document (providing entity name, old name and new attribute name)
