@@ -97,8 +97,7 @@ classDiagram
 <summary>Class Diagram - Using Image from Drawio</summary>
 
 
-![DiagramOfProject drawio](https://github.com/mjccardoso/XMLManipulationLibrary/assets/82730685/1717694b-3251-41a6-9f4f-a68a783dbb7f)
-
+![Screenshot 2024-06-04 at 2 01 28 AM](https://github.com/mjccardoso/XMLManipulationLibrary/assets/82730685/9d724afb-3a73-43a8-87f7-ef02ff10ef67)
 
 
 </details>
