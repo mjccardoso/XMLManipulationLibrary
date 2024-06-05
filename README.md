@@ -25,6 +25,16 @@ Fernando Piedade # 109266
 - Internal DSL to instantiate XML models intuitively.
 
 
+<details>
+<summary>Class Diagram - Using Image from Drawio</summary>
+
+![Screenshot 2024-06-05 at 1 40 50 AM](https://github.com/mjccardoso/XMLManipulationLibrary/assets/82730685/ebf7a6fc-a245-44a1-8272-ae1b9b61c46f)
+
+</details>
+
+<details>
+<summary>Class Diagram - Mermeid plugin</summary>
+
 ```mermaid
 ---
 title: Class Diagram
@@ -93,14 +103,6 @@ classDiagram
         +build()
     }
 ```
-
-<details>
-<summary>Class Diagram - Using Image from Drawio</summary>
-
-
-![Screenshot 2024-06-05 at 1 40 50 AM](https://github.com/mjccardoso/XMLManipulationLibrary/assets/82730685/ebf7a6fc-a245-44a1-8272-ae1b9b61c46f)
-
-
 </details>
 
 
