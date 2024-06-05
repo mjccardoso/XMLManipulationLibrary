@@ -21,6 +21,7 @@ Fernando Piedade # 109266
 - Convert entities and their children to XML string format.
 - Query the document using simple XPath expressions.
 - Validate entity names to ensure they are XML-compliant.
+- Class Annotation - flexibility
 - Internal DSL to instantiate XML models intuitively.
 
 

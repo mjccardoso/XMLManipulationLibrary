@@ -58,9 +58,6 @@ class Entity(var name: String) {
 //        this.parent = defineParent
 //    }
 
-    fun numberOfAttribute(): Int {
-        return attributes.size
-    }
     /**
      * Removes child entities by name.
      *
@@ -232,6 +229,10 @@ class Entity(var name: String) {
             ?: throw IllegalArgumentException("Attribute with name '$attributeName' not found.")
 
         attribute.value = newValue
+    }
+
+    fun numberOfAttribute(): Int {
+        return attributes.size
     }
 
     /**

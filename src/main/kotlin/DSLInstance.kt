@@ -47,6 +47,11 @@ fun xmlDocument(init: XMLDocumentBuilder.() -> Unit): Document {
     return builder.build()
 }
 
+
+
+
+
+
 fun main() {
     val document = xmlDocument {
         root("fuc") {
