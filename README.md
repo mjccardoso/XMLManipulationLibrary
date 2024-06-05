@@ -70,7 +70,7 @@ classDiagram
         +entityToXml()
     }
     
-    class XMLDocument{
+    class Document{
         +String version
         +String encoding
         +Entity entityRoot
@@ -153,10 +153,10 @@ root.addChildren(avaliacao)
 
 ### Creating the Document
 
-The `XMLDocument` class is used to manage the root entity and provides functionalities to manipulate and query the document.
+The `Document` class is used to manage the root entity and provides functionalities to manipulate and query the document.
 
 ```kotlin
-val document = XMLDocument("1.0", "UTF-8", entityRoot)
+val document = Document("1.0", "UTF-8", entityRoot)
 ```
 
 ### Pretty Printing the Document
