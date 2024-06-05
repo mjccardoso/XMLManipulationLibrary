@@ -485,8 +485,8 @@ class UnitTests {
         // Teste 1: Instância de ComponenteAvaliacao
         val c = ComponenteAvaliacao("Quizzes", 20)
         val cEntity = toXmlEntity(c)
-        println("Teste 1: ComponenteAvaliacao")
-        println(cEntity.toXmlString())
+        //println("Teste 1: ComponenteAvaliacao")
+        //println(cEntity.toXmlString())
 
         // Teste 2: Instância de FUC
         val f = FUC(
@@ -497,9 +497,17 @@ class UnitTests {
             )
         )
 
+        val CmtExpectedOutput = """
+        <fuc codigo="M4310"><componenteavaliacao><nome>Quizzes</nome><peso>20%</peso></componenteavaliacao><ects>6.0</ects><nome>Programação Avançada</nome><observacoes>la la...</observacoes></fuc>
+            """.trimIndent()
+
         val fEntity = toXmlEntity(f)
-        println("\nTeste 2: FUC")
-        println(fEntity.toXmlString())
+        val fEntityFinal = fEntity.toXmlString()
+
+        assertEquals(CmtExpectedOutput, fEntityFinal)
+
+        //println("\nTeste 2: FUC")
+        //println(fEntity.toXmlString())
 
     }
 }
