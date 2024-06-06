@@ -42,7 +42,7 @@ title: Class Diagram
 classDiagram
     Entity -->"1..0" Entity
     Attribute "0..n"-- Entity
-    Entity "1"--"1" XMLDocument
+    Entity "1"--"1" Document
     class Attribute{
         +String name
         +String value
@@ -58,7 +58,6 @@ classDiagram
         +ListOfEntity children
         +Entity parent
         
-        -init()
         -validateEntityName()
         +addTextContent()
         +addChildren()
@@ -74,7 +73,7 @@ classDiagram
         +String version
         +String encoding
         +Entity entityRoot
-        +init()
+        
         +addEntity()
         +addAttributeGlobally()
         +removeEntitiesGlobally()
